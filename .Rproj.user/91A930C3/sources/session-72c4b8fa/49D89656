@@ -1,0 +1,28 @@
+{
+    "id": "49D89656",
+    "path": "~/GitHub/CA1DataExplorationPreparation/CA1.R",
+    "project_path": "CA1.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1697549422428.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "41,0",
+        "scrollLine": "25",
+        "ignored_words": "dataset\n"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1697549924,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1697550617183,
+    "read_only": false,
+    "read_only_alternatives": []
+}

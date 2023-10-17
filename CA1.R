@@ -1,0 +1,52 @@
+# a
+# Loading necessary libraries.
+library(factoextra)
+library(corrplot)
+library(tidyverse)
+library(ggplot2)
+library(naniar)
+
+# Loading the dataset.
+data <- read.csv("data.csv", header = TRUE)
+
+# Converting categorical variables to readable labels.
+data$SEX <- factor(data$SEX, levels = c(1, 2), labels = c("Female", "Male"))
+data$ICU <- factor(data$ICU, levels = c(1, 2), labels = c("Admitted", "Not Admitted"))
+
+# Converting boolean features (1 and 2) to categorical 'Yes' and 'No'.
+boolean_features <- c("PNEUMONIA", "DIABETES", "HIPERTENSION", "OTHER_DISEASE", "CARDIOVASCULAR", "OBESITY", "RENAL_CHRONIC")
+data[boolean_features] <- lapply(data[boolean_features], function(x) {
+  factor(x, levels = c(1, 2), labels = c("Yes", "No"))
+})
+
+# Replacing missing values (represented by - 97, 98, 99) with NA.
+data[data == 97 | data == 98 | data == 99] <- NA
+
+# Checking data structure to identify variable types (categorical, discrete, continuous).
+str(data)
+
+# Visualizing distributions to further understand data type and check for missing values.
+for(var in names(data)) {
+  print(
+    if(is.factor(data[[var]])) {
+      ggplot(data, aes(x = .data[[var]])) + 
+        geom_bar() +
+        theme_minimal() +
+        labs(title = paste("Distribution of", var))
+    } else {
+      ggplot(data %>% filter(!is.na(.data[[var]])), aes(x = .data[[var]])) + 
+        geom_histogram(binwidth = 1) +
+        theme_minimal() +
+        labs(title = paste("Distribution of", var))
+    }
+  )
+}
+
+# Visualizing patterns of missing data.
+missing_cols <- sum(colSums(is.na(data)) > 0)
+if (missing_cols >= 2) {
+  gg_miss_upset(data)
+}
+
+# Displaying count of missing values per variable.
+colSums(is.na(data))
