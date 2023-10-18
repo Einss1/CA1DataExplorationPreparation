@@ -50,3 +50,36 @@ if (missing_cols >= 2) {
 
 # Displaying count of missing values per variable.
 colSums(is.na(data))
+
+
+#b
+# Calculate descriptive statistics for AGE (mean, median, min, max, and SD)
+age_stats <- data.frame(
+  Mean = mean(data$AGE, na.rm = TRUE),
+  Median = median(data$AGE, na.rm = TRUE),
+  Minimum = min(data$AGE, na.rm = TRUE),
+  Maximum = max(data$AGE, na.rm = TRUE),
+  Standard_Deviation = sd(data$AGE, na.rm = TRUE)
+)
+print(age_stats)
+
+#c
+# Scale AGE using different techniques
+
+# Min-Max normalization
+min_val <- min(data$AGE, na.rm = TRUE)
+max_val <- max(data$AGE, na.rm = TRUE)
+data$AGE_min_max <- (data$AGE - min_val) / (max_val - min_val)
+
+# Z-score standardization
+mean_val <- mean(data$AGE, na.rm = TRUE)
+sd_val <- sd(data$AGE, na.rm = TRUE)
+data$AGE_z_score <- (data$AGE - mean_val) / sd_val
+
+# Robust scaling using IQR
+q1 <- quantile(data$AGE, 0.25, na.rm = TRUE)
+q3 <- quantile(data$AGE, 0.75, na.rm = TRUE)
+data$AGE_robust <- (data$AGE - q1) / (q3 - q1)
+
+# Display first few rows of original and transformed AGE
+print(data[, c("AGE", "AGE_min_max", "AGE_z_score", "AGE_robust")][1:10, ])
