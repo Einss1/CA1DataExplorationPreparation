@@ -83,3 +83,12 @@ data$AGE_robust <- (data$AGE - q1) / (q3 - q1)
 
 # Display first few rows of original and transformed AGE
 print(data[, c("AGE", "AGE_min_max", "AGE_z_score", "AGE_robust")][1:10, ])
+
+#d
+# Calculate and visualize correlations between numeric features
+
+# Calculate correlation matrix.
+cor_matrix <- cor(data[sapply(data, is.numeric)], use = "complete.obs")
+
+# Create heatmap for visual representation of correlations.
+corrplot(cor_matrix, method = "color", type = "upper", title = "Heatmap of Correlations", tl.cex = 0.7)
