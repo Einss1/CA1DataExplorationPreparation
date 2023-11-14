@@ -116,3 +116,44 @@ print(fviz_eig(pca_result_clean))
 # Display loadings for first two principal components
 loadings_clean <- pca_result_clean$rotation[, 1:2]
 print(loadings_clean)
+
+#d
+# Calculate and visualize correlations between numeric features
+
+# Calculate correlation matrix.
+cor_matrix <- cor(data[sapply(data, is.numeric)], use = "complete.obs")
+
+# Create heatmap for visual representation of correlations.
+corrplot(cor_matrix, method = "color", type = "upper", title = "Heatmap of Correlations", tl.cex = 0.7)
+
+#e
+# Further exploration and visualization.
+
+# Correlation between AGE and ICU.
+cor_age_icu <- cor.test(data$AGE, as.numeric(data$ICU), method = "pearson", use = "complete.obs")
+print(paste("Correlation between Age and ICU Admission: ", round(cor_age_icu$estimate, 3)))
+
+# Bar plots for comorbidity frequencies in ICU patients.
+comorbidity_vars <- c("PNEUMONIA", "DIABETES", "HIPERTENSION", "OTHER_DISEASE", "CARDIOVASCULAR", "OBESITY", "RENAL_CHRONIC")
+for(var in comorbidity_vars) {
+  print(
+    ggplot(data[data$ICU == "Admitted",], aes(x = .data[[var]])) +
+      geom_bar() +
+      theme_minimal() +
+      labs(title = paste("Frequency of", var, "among ICU Admitted Patients"))
+  )
+}
+
+# Grouping and visualizing AGE in categories.
+data$age_group <- cut(data$AGE, breaks = c(0, 18, 35, 50, 65, 100), labels = c("0-18", "19-35", "36-50", "51-65", "66+"), include.lowest = TRUE)
+
+# Display age group distributions and ICU admissions by age group.
+print(ggplot(data, aes(x = age_group)) +
+        geom_bar() +
+        theme_minimal() +
+        labs(title = "Distribution of Patients by Age Groups"))
+
+print(ggplot(data, aes(x = age_group, fill = ICU)) +
+        geom_bar(position = "dodge") +
+        theme_minimal() +
+        labs(title = "ICU Admissions by Age Groups"))
