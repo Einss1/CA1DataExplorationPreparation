@@ -83,3 +83,36 @@ data$AGE_robust <- (data$AGE - q1) / (q3 - q1)
 
 # Display first few rows of original and transformed AGE
 print(data[, c("AGE", "AGE_min_max", "AGE_z_score", "AGE_robust")][1:10, ])
+
+
+#f
+# One-hot encode the 'SEX' variable
+
+# Generate dummy variables
+data_dummies <- model.matrix(~SEX - 1, data)
+data_dummies <- as.data.frame(data_dummies)
+data <- cbind(data, data_dummies)
+
+# Check encoding results
+print(head(data[, c("SEXFemale", "SEXMale")]))
+
+#g
+# Perform PCA on cleaned dataset
+
+# Filter out rows with missing values
+clean_data <- data[complete.cases(data), ]
+
+# Standardize numeric data
+numeric_data_clean <- clean_data[, sapply(clean_data, is.numeric)]
+standardized_data_clean <- scale(numeric_data_clean, center = TRUE, scale = TRUE)
+
+# Apply PCA
+pca_result_clean <- prcomp(standardized_data_clean)
+
+# Summary and visualization of PCA results
+summary(pca_result_clean)
+print(fviz_eig(pca_result_clean))
+
+# Display loadings for first two principal components
+loadings_clean <- pca_result_clean$rotation[, 1:2]
+print(loadings_clean)
