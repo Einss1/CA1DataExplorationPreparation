@@ -84,12 +84,25 @@ data$AGE_robust <- (data$AGE - q1) / (q3 - q1)
 print(data[, c("AGE", "AGE_min_max", "AGE_z_score", "AGE_robust")][1:10, ])
 
 #d
-#Calculating and visualizing correlations between numeric features.
+#Converting factors to numeric and handling NAs for each variable.
+#Assuming 'Yes' is 1 and 'No' is 2.
+data$DIABETES_numeric <- ifelse(data$DIABETES == "Yes", 1, ifelse(data$DIABETES == "No", 0, NA))
+data$HIPERTENSION_numeric <- ifelse(data$HIPERTENSION == "Yes", 1, ifelse(data$HIPERTENSION == "No", 0, NA))
+data$PNEUMONIA_numeric <- ifelse(data$PNEUMONIA == "Yes", 1, ifelse(data$PNEUMONIA == "No", 0, NA))
+data$OBESITY_numeric <- ifelse(data$OBESITY == "Yes", 1, ifelse(data$OBESITY == "No", 0, NA))
+data$ICU_numeric <- ifelse(data$ICU == "Admitted", 1, ifelse(data$ICU == "Not Admitted", 0, NA))
 
-#Calculating correlation matrix.
-cor_matrix <- cor(data[sapply(data, is.numeric)], use = "complete.obs")
+#Filtering out rows where any of the variables are NA.
+filtered_data <- data[!is.na(data$AGE) & !is.na(data$DIABETES_numeric) & !is.na(data$HIPERTENSION_numeric) &
+                        !is.na(data$PNEUMONIA_numeric) & !is.na(data$OBESITY_numeric) & !is.na(data$ICU_numeric), ]
 
-#Creating heatmap for visual representation of correlations.
+#Selecting only the variables of interest for correlation.
+selected_vars <- filtered_data[c("AGE", "DIABETES_numeric", "HIPERTENSION_numeric", "PNEUMONIA_numeric", "OBESITY_numeric", "ICU_numeric")]
+
+#Calculating the correlation matrix for selected variables.
+cor_matrix <- cor(selected_vars, use = "complete.obs")
+
+#Creating a heatmap for visual representation of correlations.
 corrplot(cor_matrix, method = "color", type = "upper", title = "Heatmap of Correlations", tl.cex = 0.7)
 
 #e
